@@ -7,6 +7,13 @@ This project demonstrates the implementation of a secure secrets-management work
 The goal was to allow an automated workload to securely retrieve a protected secret without storing credentials in the automation code, while enforcing least-privilege access and providing auditing and detection for unauthorized activity.
 
 ---
+## Project Documentation
+
+📄 **[View Full Portfolio Case Study](docs/Azure_PAM_Secrets_Management_Lab_Case_Study.pdf)**
+
+The case study provides a detailed walkthrough of the architecture, RBAC design, managed identity implementation, least-privilege testing, secret rotation, audit logging, KQL detection, and Azure Monitor alerting used in this project.
+
+---
 
 ## Architecture
 

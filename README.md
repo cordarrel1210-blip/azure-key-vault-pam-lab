@@ -78,6 +78,11 @@ The lab was designed around several IAM/PAM security principles:
 The Azure Automation Account uses a **system-assigned managed identity**.
 
 The workload identity was assigned:
+### RBAC Configuration
+
+![Managed Identity RBAC](screenshots/managed-identity-rbac.png)
+
+The Azure Automation managed identity is assigned the **Key Vault Secrets User** role at the Key Vault resource scope.
 
 **Key Vault Secrets User**
 
@@ -107,6 +112,11 @@ The runbook retrieves the `Database-Password` secret from Azure Key Vault.
 The secret value is intentionally **not written to the Automation job logs**.
 
 Example:
+### Validation Evidence
+
+![Successful Secret Retrieval](screenshots/successful-secret-retrieval.png)
+
+The Automation runbook successfully authenticated using its managed identity and retrieved the secret without exposing the secret value in the job output.
 
 ```text
 Managed Identity authentication successful.
@@ -129,7 +139,11 @@ Managed Identity cannot create or modify Key Vault secrets.
 Least-privilege control verified.
 
 Code: Forbidden
-```
+```### Authorization Test Evidence
+
+![Least Privilege Denial](screenshots/least-privilege-denial.png)
+
+The managed identity's attempt to create a secret was rejected with **Forbidden**, validating the least-privilege RBAC configuration.
 
 This demonstrated that the workload could consume a secret without receiving unnecessary secret-management privileges.
 
@@ -162,7 +176,11 @@ Unauthorized `SecretSet` attempts were recorded with:
 
 ```text
 ResultSignature = Forbidden
-```
+```### Audit Evidence
+
+![Log Analytics Detection](screenshots/log-analytics-detection.png)
+
+Log Analytics captured the denied `SecretSet` operations, providing an auditable record of the authorization failure.
 
 ---
 
@@ -194,6 +212,11 @@ Key Vault Diagnostic Log
 A controlled unauthorized-access test successfully triggered the alert.
 
 ---
+### Alert Evidence
+
+![Azure Monitor Alert](screenshots/azure-monitor-alert.png)
+
+Azure Monitor generated an alert after the controlled unauthorized-access test triggered the configured detection rule.
 
 ## Secret Rotation
 

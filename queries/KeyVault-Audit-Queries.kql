@@ -1,0 +1,52 @@
+// Azure Key Vault Audit Queries
+// Used to investigate secret access and authorization failures.
+
+// ---------------------------------------------------------
+// 1. Successful and failed SecretGet operations
+// ---------------------------------------------------------
+
+AzureDiagnostics
+| where ResourceProvider == "MICROSOFT.KEYVAULT"
+| where Resource == "KV-PAM-LAB-CW22"
+| where OperationName == "SecretGet"
+| project
+    TimeGenerated,
+    OperationName,
+    ResultType,
+    ResultSignature,
+    CallerIPAddress,
+    identity_claim_appid_g,
+    requestUri_s
+| sort by TimeGenerated desc
+
+
+// ---------------------------------------------------------
+// 2. SecretSet operations
+// Used to validate least-privilege enforcement
+// ---------------------------------------------------------
+
+AzureDiagnostics
+| where ResourceProvider == "MICROSOFT.KEYVAULT"
+| where Resource == "KV-PAM-LAB-CW22"
+| where OperationName == "SecretSet"
+| project
+    TimeGenerated,
+    OperationName,
+    ResultType,
+    ResultSignature,
+    CallerIPAddress,
+    identity_claim_appid_g,
+    requestUri_s
+| sort by TimeGenerated desc
+
+
+// ---------------------------------------------------------
+// 3. Unauthorized SecretGet detection
+// Used by the Azure Monitor detection workflow
+// ---------------------------------------------------------
+
+AzureDiagnostics
+| where ResourceProvider == "MICROSOFT.KEYVAULT"
+| where Resource == "KV-PAM-LAB-CW22"
+| where OperationName == "SecretGet"
+| where ResultSignature == "Forbidden"
